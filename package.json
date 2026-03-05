@@ -1,0 +1,35 @@
+{
+  "name": "pract_1",
+  "version": "1.0.0",
+  "description": "clean react practise project",
+  "scripts": {
+    "start": "parcel index.html",
+    "build":"parcel build index.html",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beniax/pract_1.git"
+  },
+  "keywords": [
+    "npm",
+    "react",
+    "etc"
+  ],
+  "author": "Suman Saurav Das",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/beniax/pract_1/issues"
+  },
+  "homepage": "https://github.com/beniax/pract_1#readme",
+  "devDependencies": {
+    "parcel": "^2.16.4"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ]
+}
