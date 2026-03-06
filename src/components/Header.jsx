@@ -12,22 +12,28 @@ const LeftCornerElement = () => {
     </a>
   );
 };
-const rightCornerElement = (
-  <nav>
-    <a href="#">🏠 Home</a>
-    <a href="#">ℹ️ About Us</a>
-    <a href="#">📞 Contact</a>
-    <a href="#" className="cart-btn">
-      🛒 Cart <span className="cart-count">3</span>
-    </a>
-  </nav>
-);
+const RightCornerElement = () => {
+  const [loginbtn, setloginbtn] = React.useState(false);
+  return (
+    <nav>
+      <a href="#">🏠 Home</a>
+      <a href="#">ℹ️ About Us</a>
+      <a href="#">📞 Contact</a>
+      <a href="#" className="cart-btn">
+        🛒 Cart <span className="cart-count">3</span>
+      </a>
+      <button className="chip" onClick={() => setloginbtn(!loginbtn)}>
+        🔑 {loginbtn ? "Logout" : "Login"}
+      </button>
+    </nav>
+  );
+};
 
 const Header = () => {
   return (
     <header>
       <LeftCornerElement />
-      {rightCornerElement}
+      <RightCornerElement />
     </header>
   );
 };

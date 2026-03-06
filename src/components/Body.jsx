@@ -1,19 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import "../../index.css";
-import ALL_RESTAURANTS from "../utils/mock_data_";
 import RestCards from "./Rest-cards/RestCards";
+import { ShimmerCard } from "../utils/ShimerUI";
 
 const Body = () => {
-  const [listOfRestaurants, setListOfRestaurants] = useState(ALL_RESTAURANTS);
+  const [listOfRestaurants, setListOfRestaurants] = useState([]);
+
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+
   const [isActive, setIsActive] = useState("all");
+  const [searchText, setSearchText] = useState("");
 
   const handleFilter = (btactv, listrestfn) => {
     setIsActive(btactv);
-    setListOfRestaurants(listrestfn());
+    setFilteredRestaurants(listrestfn());
   };
 
-  return (
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const data = await fetch("https://namastedev.com/api/v1/listRestaurants");
+
+      const json = await data.json();
+      const rest =
+        json?.data?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle
+          ?.restaurants || [];
+
+      setListOfRestaurants(rest);
+      setFilteredRestaurants(rest);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //   if (listOfRestaurants.length === 0) return <ShimmerCard />;
+
+  return listOfRestaurants.length === 0 ? (
+    <ShimmerCard />
+  ) : (
     <main>
       <div className="search-wrap">
         <svg
@@ -31,13 +59,29 @@ const Body = () => {
           type="text"
           id="searchInput"
           placeholder="Search for restaurants or cuisines..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
         />
+        <button
+          className="chip active"
+          onClick={() => {
+            setFilteredRestaurants(
+              listOfRestaurants.filter((rest) => {
+                return rest.info?.name
+                  .toLowerCase()
+                  .includes(searchText.toLowerCase());
+              }),
+            );
+          }}
+        >
+          Search
+        </button>
       </div>
 
       <div className="filters">
         <button
           className={`chip ${isActive === "all" ? "active" : ""}`}
-          onClick={() => handleFilter("all", () => ALL_RESTAURANTS)}
+          onClick={() => handleFilter("all", () => listOfRestaurants)}
         >
           All
         </button>
@@ -45,7 +89,9 @@ const Body = () => {
           className={`chip ${isActive === "fastdel" ? "active" : ""}`}
           onClick={() =>
             handleFilter("fastdel", () =>
-              ALL_RESTAURANTS.filter((rest) => rest.time <= "20 min"),
+              listOfRestaurants.filter(
+                (rest) => rest.info?.sla?.deliveryTime <= 20,
+              ),
             )
           }
         >
@@ -55,7 +101,7 @@ const Body = () => {
           className={`chip ${isActive === "toprated" ? "active" : ""}`}
           onClick={() =>
             handleFilter("toprated", () =>
-              ALL_RESTAURANTS.filter((rest) => rest.rating > 4),
+              listOfRestaurants.filter((rest) => rest.info?.avgRating >= 4.2),
             )
           }
         >
@@ -65,7 +111,9 @@ const Body = () => {
           className={`chip ${isActive === "offers" ? "active" : ""}`}
           onClick={() =>
             handleFilter("offers", () =>
-              ALL_RESTAURANTS.filter((rest) => rest.offer !== ""),
+              listOfRestaurants.filter(
+                (rest) => rest.info?.aggregatedDiscountInfoV3?.header !== "",
+              ),
             )
           }
         >
@@ -75,28 +123,13 @@ const Body = () => {
           className={`chip ${isActive === "pureveg" ? "active" : ""}`}
           onClick={() =>
             handleFilter("pureveg", () => {
-              const pureVegRest = ALL_RESTAURANTS.filter((rest) =>
-                rest.tags.includes("pure veg"),
+              return listOfRestaurants.filter(
+                (rest) => rest.info?.veg === true,
               );
-
-              return pureVegRest;
             })
           }
         >
           🥦 Pure Veg
-        </button>
-        <button
-          className={`chip ${isActive === "under200" ? "active" : ""}`}
-          onClick={() =>
-            handleFilter("under200", () => {
-              const under200Rest = ALL_RESTAURANTS.filter((rest) =>
-                rest.tags.includes("under 200"),
-              );
-              return under200Rest;
-            })
-          }
-        >
-          💸 Under ₹200
         </button>
       </div>
 
@@ -109,8 +142,8 @@ const Body = () => {
 
       {/* cards */}
       <div className="restaurantsCard">
-        {listOfRestaurants?.map((r) => (
-          <RestCards resData={r} key={r.id} />
+        {filteredRestaurants?.map((r) => (
+          <RestCards resData={r} key={r.info?.id} />
         ))}
       </div>
     </main>
