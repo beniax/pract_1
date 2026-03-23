@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "../../index.css";
+import { Link } from "react-router-dom";
 
 const LeftCornerElement = () => {
   return (
@@ -16,9 +17,9 @@ const RightCornerElement = () => {
   const [loginbtn, setloginbtn] = React.useState(false);
   return (
     <nav>
-      <a href="#">🏠 Home</a>
-      <a href="#">ℹ️ About Us</a>
-      <a href="#">📞 Contact</a>
+      <Link to="/">🏠 Home</Link>
+      <Link to="/about">ℹ️ About Us</Link>
+      <Link to="/contact">📞 Contact</Link>
       <a href="#" className="cart-btn">
         🛒 Cart <span className="cart-count">3</span>
       </a>

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "../../index.css";
 import RestCards from "./Rest-cards/RestCards";
 import { ShimmerCard } from "../utils/ShimerUI";
+import { Link } from "react-router-dom";
 
 const Body = () => {
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
@@ -11,7 +12,6 @@ const Body = () => {
 
   const [isActive, setIsActive] = useState("all");
   const [searchText, setSearchText] = useState("");
-
   const handleFilter = (btactv, listrestfn) => {
     setIsActive(btactv);
     setFilteredRestaurants(listrestfn());
@@ -140,10 +140,11 @@ const Body = () => {
         <div className="dot"></div>
       </div>
 
-      {/* cards */}
       <div className="restaurantsCard">
         {filteredRestaurants?.map((r) => (
-          <RestCards resData={r} key={r.info?.id} />
+          <Link to={`/restaurantMenu/${r.info?.id}`} key={r.info?.id}>
+            <RestCards resData={r} />
+          </Link>
         ))}
       </div>
     </main>
